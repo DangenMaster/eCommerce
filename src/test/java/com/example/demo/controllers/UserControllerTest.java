@@ -13,8 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,5 +82,19 @@ public class UserControllerTest {
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(user, response.getBody());
+    }
+
+    @Test
+    public void createUserTooShortPassword(){
+        CreateUserRequest r = new CreateUserRequest();
+        r.setUsername("test");
+        r.setPassword("test");
+        r.setConfirmPassword("test");
+
+        ResponseEntity<User> response = userController.createUser(r);
+
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+        assertNull(response.getBody());
     }
 }

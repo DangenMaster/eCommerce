@@ -89,4 +89,35 @@ public class CartControllerTest {
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
     }
+
+    @Test
+    public void verify_add_to_cart_for_non_existing_user(){
+        Long existingItemId = 1L;
+
+        Item item = new Item();
+        item.setId(existingItemId);
+        item.setPrice(BigDecimal.valueOf(1.5));
+
+        ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
+
+
+        modifyCartRequest.setItemId(existingItemId);
+        modifyCartRequest.setQuantity(10);
+
+        ResponseEntity<Cart> response = cartController.addTocart(modifyCartRequest);
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void remove_from_cart_for_non_existing_user(){
+        String nonExistingUsername = "test5";
+
+        ModifyCartRequest modifyCartRequest = new ModifyCartRequest();
+        modifyCartRequest.setUsername(nonExistingUsername);
+
+        ResponseEntity<Cart> response = cartController.removeFromcart(modifyCartRequest);
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCodeValue());
+    }
 }

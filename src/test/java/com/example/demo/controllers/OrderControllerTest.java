@@ -68,4 +68,23 @@ public class OrderControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(new ArrayList<UserOrder>(), response.getBody());
     }
+
+    @Test
+    public void verify_submit_order_for_non_existing_user(){
+        String nonExistingUserName = "test5";
+
+        ResponseEntity<UserOrder> response = orderController.submit(nonExistingUserName);
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void verify_get_order_for_non_existing_user(){
+        String existingUserName = "test5";
+
+        ResponseEntity<List<UserOrder>> response = orderController.getOrdersForUser(existingUserName);
+
+        assertNotNull(response);
+        assertEquals(404, response.getStatusCodeValue());
+    }
 }
