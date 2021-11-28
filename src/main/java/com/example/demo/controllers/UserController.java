@@ -22,8 +22,7 @@ import com.example.demo.model.requests.CreateUserRequest;
 @RequestMapping("/api/user")
 public class UserController {
 
-	//public static final Logger log = LogManager.getLogger(MyClass.class)
-	public static final Logger log = LoggerFactory.getLogger(UserController.class);
+	private Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private UserRepository userRepository;
@@ -49,19 +48,21 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		log.info("created user with name: " + createUserRequest.getUsername());
 		Cart cart = new Cart();
 		cartRepository.save(cart);
 		user.setCart(cart);
 		if (createUserRequest.getPassword().length() < 7 ||
 			!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())
 		) {
-			System.out.println("Error - Either length is less than 7 or pass and conf pass do not match. Unable to create " +
+			System.out.println(" " +
 					createUserRequest.getUsername());
+            logger.error("Either length is less than 7 or password and conf-password do not match. Unable to create {}",
+                    createUserRequest.getUsername());
 			return ResponseEntity.badRequest().build();
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 		userRepository.save(user);
+        logger.info("User created with name: {}", user.getUsername());
 		return ResponseEntity.ok(user);
 	}
 	
