@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,8 +62,12 @@ public class UserController {
 			return ResponseEntity.badRequest().build();
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
-		userRepository.save(user);
-        logger.info("User created with name: {}", user.getUsername());
+		try {
+			userRepository.save(user);
+			logger.info("User created with name: {}", user.getUsername());
+		} catch (DataIntegrityViolationException ex) {
+			logger.error("User not created with exception: {}", user.getUsername());
+		}
 		return ResponseEntity.ok(user);
 	}
 	
